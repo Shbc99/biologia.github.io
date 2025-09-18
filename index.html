@@ -5,24 +5,50 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Células Gram Negativas - Seminário</title>
   <style>
+    :root {
+      --bg-color: #f9f9f9;
+      --text-color: #222;
+      --section-bg: white;
+      --header-color: #2c3e50;
+    }
+
+    body.dark-mode {
+      --bg-color: #121212;
+      --text-color: #f0f0f0;
+      --section-bg: #1e1e1e;
+      --header-color: #81c784;
+    }
+
     body {
       font-family: Arial, sans-serif;
       line-height: 1.6;
       margin: 20px;
-      background-color: #f9f9f9;
-      color: #222;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
     }
+
     h1, h2 {
-      color: #2c3e50;
+      color: var(--header-color);
     }
+
     section {
-      background: white;
+      background: var(--section-bg);
       padding: 15px 20px;
       margin-bottom: 20px;
       border-radius: 8px;
       box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease-out;
     }
-    button.audio-btn {
+
+    section.animate {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    button.audio-btn, button.theme-toggle {
       background-color: #2980b9;
       color: white;
       border: none;
@@ -33,22 +59,44 @@
       margin-top: 8px;
       transition: background-color 0.3s ease;
     }
-    button.audio-btn:hover, button.audio-btn:focus {
+
+    button.audio-btn:hover, button.audio-btn:focus,
+    button.theme-toggle:hover, button.theme-toggle:focus {
       background-color: #1c5980;
       outline: none;
     }
+
     ul {
       margin-left: 20px;
     }
+
     footer {
       text-align: center;
       font-size: 0.9rem;
       color: #666;
       margin-top: 40px;
     }
+
+    #controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    #vlibras {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      z-index: 999;
+    }
   </style>
 </head>
 <body>
+  <div id="controls">
+    <button class="theme-toggle" onclick="toggleTheme()">🌙 Alternar Tema</button>
+  </div>
+
   <h1>Células Gram-negativas</h1>
 
   <section id="intro">
@@ -101,13 +149,25 @@
     <p>Seminário sobre Células Gram-negativas - Criado por Izaque Barroso Silva</p>
   </footer>
 
+  <!-- VLibras Widget -->
+  <div id="vlibras">
+    <div vw class="enabled">
+      <div vw-access-button class="active"></div>
+      <div vw-plugin-wrapper>
+        <div class="vw-plugin-top-wrapper"></div>
+      </div>
+    </div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
   <script>
+    new window.VLibras.Widget('https://vlibras.gov.br/app');
+
     const audioTexts = {
       intro: "As células Gram-negativas são um tipo de bactéria caracterizada por sua parede celular complexa e pela coloração adquirida no teste de Gram, desenvolvido por Hans Christian Gram em 1884. Durante o processo, essas bactérias não retêm o corante cristal violeta e assumem a cor rosa ou avermelhada após a contra-coloração com safranina.",
-      estrutura: "A principal característica das bactérias Gram-negativas é a presença de uma dupla camada que envolve a célula. O peptidoglicano fino é uma camada delgada localizada entre duas membranas, oferecendo suporte estrutural, mas bem menos espessa do que nas Gram-positivas. A membrana externa, presente apenas em Gram-negativas, é composta por lipopolissacarídeos, lipoproteínas e fosfolipídios, atuando como uma barreira adicional contra substâncias tóxicas e antibióticos. O espaço periplasmático é a região entre a membrana citoplasmática e a externa, rica em enzimas e proteínas transportadoras.",
-      importancia: "As Gram-negativas incluem diversas bactérias de relevância médica, ambiental e industrial. Muitos patógenos pertencem a esse grupo, como Escherichia coli, Salmonella, Pseudomonas aeruginosa e Neisseria meningitidis. O lipopolissacarídeo presente na membrana externa pode atuar como endotoxina, desencadeando fortes respostas imunológicas no organismo humano.",
+      estrutura: "A principal característica das bactérias Gram-negativas é a presença de uma dupla camada que envolve a célula: Peptidoglicano fino: uma camada delgada localizada entre duas membranas, oferecendo suporte estrutural, mas bem menos espessa do que nas Gram-positivas. Membrana externa: presente apenas em Gram-negativas, composta por lipopolissacarídeos (LPS), lipoproteínas e fosfolipídios. Essa membrana atua como uma barreira adicional contra substâncias tóxicas e antibióticos. Espaço periplasmático: região entre a membrana citoplasmática e a externa, rica em enzimas e proteínas transportadoras.",
+      importancia: "As Gram-negativas incluem diversas bactérias de relevância médica, ambiental e industrial. Muitos patógenos pertencem a esse grupo, como Escherichia coli, Salmonella, Pseudomonas aeruginosa e Neisseria meningitidis. O lipopolissacarídeo (LPS) presente na membrana externa pode atuar como endotoxina, desencadeando fortes respostas imunológicas no organismo humano.",
       resistencia: "Devido à barreira adicional da membrana externa, as Gram-negativas tendem a apresentar maior resistência a antibióticos em comparação às Gram-positivas. Essa característica torna o tratamento de infecções causadas por elas um desafio crescente na área da saúde.",
-      ecossistema: "Além do impacto médico, as bactérias Gram-negativas também participam de processos importantes no ambiente, como ciclagem de nutrientes no solo, degradação de compostos orgânicos e simbioses benéficas em plantas e animais."
+      ecossistema: "Além do impacto médico, as bactérias Gram-negativas também participam de processos importantes no ambiente, como: Ciclagem de nutrientes no solo. Degradação de compostos orgânicos. Simbioses benéficas em plantas e animais."
     };
 
     let isSpeaking = false;
@@ -143,7 +203,24 @@
       isSpeaking = true;
       button.textContent = "⏸️ Pausar descrição";
     }
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark-mode');
+    }
+
+    // Animação com IntersectionObserver
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate');
+          observer.unobserve(entry.target);
+        }
+      });
+    });
+
+    document.querySelectorAll('section').forEach(section => {
+      observer.observe(section);
+    });
   </script>
 </body>
 </html>
-
