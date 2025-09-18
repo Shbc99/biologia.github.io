@@ -56,7 +56,7 @@
     <p>
       As células Gram-negativas são um tipo de bactéria caracterizada por sua parede celular complexa e pela coloração adquirida no teste de Gram, desenvolvido por Hans Christian Gram em 1884. Durante o processo, essas bactérias não retêm o corante cristal violeta e assumem a cor rosa ou avermelhada após a contra-coloração com safranina.
     </p>
-    <button class="audio-btn" aria-label="Ouvir descrição da introdução" onclick="playAudio('intro')">🔊 Ouvir descrição</button>
+    <button class="audio-btn" onclick="toggleAudio('intro', this)">▶️ Ouvir descrição</button>
   </section>
 
   <section id="estrutura">
@@ -67,7 +67,7 @@
       <li><strong>Membrana externa:</strong> presente apenas em Gram-negativas, composta por lipopolissacarídeos (LPS), lipoproteínas e fosfolipídios. Essa membrana atua como uma barreira adicional contra substâncias tóxicas e antibióticos.</li>
       <li><strong>Espaço periplasmático:</strong> região entre a membrana citoplasmática e a externa, rica em enzimas e proteínas transportadoras.</li>
     </ul>
-    <button class="audio-btn" aria-label="Ouvir descrição da estrutura da parede celular" onclick="playAudio('estrutura')">🔊 Ouvir descrição</button>
+    <button class="audio-btn" onclick="toggleAudio('estrutura', this)">▶️ Ouvir descrição</button>
   </section>
 
   <section id="importancia">
@@ -75,7 +75,7 @@
     <p>
       As Gram-negativas incluem diversas bactérias de relevância médica, ambiental e industrial. Muitos patógenos pertencem a esse grupo, como <em>Escherichia coli</em>, <em>Salmonella</em>, <em>Pseudomonas aeruginosa</em> e <em>Neisseria meningitidis</em>. O lipopolissacarídeo (LPS) presente na membrana externa pode atuar como endotoxina, desencadeando fortes respostas imunológicas no organismo humano.
     </p>
-    <button class="audio-btn" aria-label="Ouvir descrição da importância biológica" onclick="playAudio('importancia')">🔊 Ouvir descrição</button>
+    <button class="audio-btn" onclick="toggleAudio('importancia', this)">▶️ Ouvir descrição</button>
   </section>
 
   <section id="resistencia">
@@ -83,7 +83,7 @@
     <p>
       Devido à barreira adicional da membrana externa, as Gram-negativas tendem a apresentar maior resistência a antibióticos em comparação às Gram-positivas. Essa característica torna o tratamento de infecções causadas por elas um desafio crescente na área da saúde.
     </p>
-    <button class="audio-btn" aria-label="Ouvir descrição da resistência a antibióticos" onclick="playAudio('resistencia')">🔊 Ouvir descrição</button>
+    <button class="audio-btn" onclick="toggleAudio('resistencia', this)">▶️ Ouvir descrição</button>
   </section>
 
   <section id="ecossistema">
@@ -94,7 +94,7 @@
       <li>Degradação de compostos orgânicos.</li>
       <li>Simbioses benéficas em plantas e animais.</li>
     </ul>
-    <button class="audio-btn" aria-label="Ouvir descrição da relevância no ecossistema" onclick="playAudio('ecossistema')">🔊 Ouvir descrição</button>
+    <button class="audio-btn" onclick="toggleAudio('ecossistema', this)">▶️ Ouvir descrição</button>
   </section>
 
   <footer>
@@ -110,23 +110,38 @@
       ecossistema: "Além do impacto médico, as bactérias Gram-negativas também participam de processos importantes no ambiente, como ciclagem de nutrientes no solo, degradação de compostos orgânicos e simbioses benéficas em plantas e animais."
     };
 
-    function playAudio(sectionId) {
+    let isSpeaking = false;
+    let currentUtterance = null;
+
+    function toggleAudio(sectionId, button) {
       if (!('speechSynthesis' in window)) {
         alert('Desculpe, seu navegador não suporta síntese de voz.');
         return;
       }
 
-      window.speechSynthesis.cancel();
+      if (isSpeaking) {
+        window.speechSynthesis.cancel();
+        isSpeaking = false;
+        button.textContent = "▶️ Ouvir descrição";
+        return;
+      }
 
       const text = audioTexts[sectionId];
       if (!text) return;
 
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'pt-BR';
-      utterance.rate = 1;
-      utterance.pitch = 1;
+      currentUtterance = new SpeechSynthesisUtterance(text);
+      currentUtterance.lang = 'pt-BR';
+      currentUtterance.rate = 1;
+      currentUtterance.pitch = 1;
 
-      window.speechSynthesis.speak(utterance);
+      currentUtterance.onend = () => {
+        isSpeaking = false;
+        button.textContent = "▶️ Ouvir descrição";
+      };
+
+      window.speechSynthesis.speak(currentUtterance);
+      isSpeaking = true;
+      button.textContent = "⏸️ Pausar descrição";
     }
   </script>
 </body>
